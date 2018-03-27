@@ -26,7 +26,7 @@ require_once('database.php');
 header('Content-Type: text/plain; charset=utf-8');
 header('Cache-control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
-// Databse connexion.
+// Database connection.
 $db = dbConnect();
 if (!$db)
 {
@@ -42,15 +42,15 @@ $request = explode('/', $request);
 $requestRessource = array_shift($request);
 
 $data = $requestType.':'.$requestRessource;
-//TEST
+
 // Check the id associated to the request.
 $id = array_shift($request);
 if ($id == '')
 $id = NULL;
 
 // Photos request.
-if (isset($_GET['id'])){
-  $data = dbRequestPhoto($db, $_GET['id']); //IS THERE SOMETHING WRONG
+if (isset($id)){
+  $data = dbRequestPhoto($db, intval($id));
   if (!$data) {
     header('HTTP/1.1 400 Bad Request');
     exit;
@@ -61,17 +61,29 @@ if (isset($_GET['id'])){
     header('HTTP/1.1 400 Bad Request');
     exit();
   }
-  //
-  // if ($requestType == 'POST')
-  //   dbAddTwitt($db, $_POST['login'], $_POST['text']);
-  //
-  // if ($requestType == 'PUT'){
-  //   parse_str(file_get_contents('php://input'), $_PUT);
-  //   dbModifyTwitt($db, intval($id), $_PUT['login'], $_PUT['text']);
-  // }
-  // if ($requestType == 'DELETE')
-  //   dbDeleteTwitt($db, intval($id), $_GET['login']);
 }
+
+
+if ($requestRessource == 'comments')
+{
+  if ($requestType == 'GET') {
+    if (isset($_GET['login']))
+      $data = dbRequestComments($db, $_GET['login']);
+    else
+      $data = dbRequestComments($db);
+  }
+
+  if ($requestType == 'POST')
+    dbAddComment($db, $_POST['login'], $_POST['text']);
+
+  if ($requestType == 'PUT'){
+    parse_str(file_get_contents('php://input'), $_PUT);
+    dbModifyComment($db, intval($id), $_PUT['login'], $_PUT['text']);
+  }
+  if ($requestType == 'DELETE')
+    dbDeleteComment($db, intval($id), $_GET['login']);
+}
+
 
 // Send data to the client.
 
