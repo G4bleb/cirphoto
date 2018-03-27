@@ -21,13 +21,6 @@
 // exit();
 ?>
 <?php
-/**
-* @Author: Thibault Napoléon <Imothep>
-* @Company: ISEN Yncréa Ouest
-* @Email: thibault.napoleon@isen-ouest.yncrea.fr
-* @Created Date: 29-Jan-2018 - 16:48:46
-* @Last Modified: 29-Jan-2018 - 21:46:02
-*/
 
 require_once('database.php');
 header('Content-Type: text/plain; charset=utf-8');
