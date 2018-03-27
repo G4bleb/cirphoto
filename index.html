@@ -1,75 +1,75 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!-- Meta -->
-    <meta charset="utf-8" />
-    <meta name="author" content="???" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <!-- Meta -->
+  <meta charset="utf-8" />
+  <meta name="author" content="???" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Title -->
-    <title>Projet CIR2 24/01/18 - AJAX</title>
+  <!-- Title -->
+  <title>Projet CIR2 24/01/18 - AJAX</title>
 
-    <!-- Stylesheets -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+  <!-- Stylesheets -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
 
-    <!-- Scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/ajax.js"></script>
-    <script src="js/loading.js"></script>
-    <!-- <script src="js/chat.js"></script> -->
-  </head>
-  <body>
-    <!-- Header -->
-    <div class="page-header container">
-      <h1>Projet CIR2 24/01/18 <small>AJAX</small></h1>
-    </div>
+  <!-- Scripts -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/ajax.js"></script>
+  <script src="js/loading.js"></script>
+  <!-- <script src="js/chat.js"></script> -->
+</head>
+<body>
+  <!-- Header -->
+  <div class="page-header container">
+    <h1>Projet CIR2 24/01/18 <small>AJAX</small></h1>
+  </div>
 
-    <!-- Errors div -->
-    <div id="errors" class="container alert alert-dangers" style="display:none">
-    </div>
+  <!-- Errors div -->
+  <div id="errors" class="container alert alert-dangers" style="display:none">
+  </div>
 
-    <!-- Authentication div -->
-    <div id="auth" class="container">
-    </div>
+  <!-- Authentication div -->
+  <div id="auth" class="container">
+  </div>
 
-    <!-- Thumbnails div -->
-    <div class="container">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Photo gallery</h3>
-        </div>
-        <div id="thumbnails" class="col-md-8">
-        </div>
-        <div id="photo" class="col-md-8">
-        </div>
-        <div id="comments" class="col-md-8">
-        </div>
-        <div id="comments-add" class="col-md-8">
-        </div>
-        <div id="chat" class="col-md-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Chat</h3>
-            </div>
-            <div class="panel-body">
-              <form>
-                <textarea class="form-control" rows="10" id="chat-room" readonly></textarea>
-                <div class="input-group">
-                  <span class="input-group-addon">Message ></span>
-                  <input type="text" class="form-control" id="chat-message" placeholder="Entrez votre message" autofocus>
-                </div>
-                <br />
-                <button type="submit" class="btn btn-success pull-right" id="chat-send">
-                  <span class="glyphicon glyphicon-send"></span> Envoyer
-                </button>
-              </form>
-            </div>
+  <!-- Thumbnails div -->
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Photo gallery</h3>
+      </div>
+      <div id="thumbnails" class="col-md-8">
+      </div>
+      <div id="photo" class="col-md-8">
+      </div>
+      <div id="comments" class="col-md-8">
+      </div>
+      <div id="comments-add" class="col-md-8">
+      </div>
+      <div id="chat" class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Chat</h3>
+          </div>
+          <div class="panel-body">
+            <form>
+              <textarea class="form-control" rows="10" id="chat-room" readonly></textarea>
+              <div class="input-group">
+                <span class="input-group-addon">Message ></span>
+                <input type="text" class="form-control" id="chat-message" placeholder="Entrez votre message" autofocus>
+              </div>
+              <br />
+              <button type="submit" class="btn btn-success pull-right" id="chat-send">
+                <span class="glyphicon glyphicon-send"></span> Envoyer
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-  </body>
+</body>
 </html>

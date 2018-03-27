@@ -37,6 +37,7 @@ if (!$db)
 // Check the request.
 $requestType = $_SERVER['REQUEST_METHOD'];
 $request = substr($_SERVER['PATH_INFO'], 1);
+// $request = str_replace('BASE_URL' , "" , $_SERVER['REQUEST_URI']);
 $request = explode('/', $request);
 $requestRessource = array_shift($request);
 
@@ -49,7 +50,7 @@ $id = NULL;
 
 // Photos request.
 if (isset($_GET['id'])){
-  $data = dbRequestPhoto($db, $_GET['id']);
+  $data = dbRequestPhoto($db, $_GET['id']); //IS THERE SOMETHING WRONG
   if (!$data) {
     header('HTTP/1.1 400 Bad Request');
     exit;

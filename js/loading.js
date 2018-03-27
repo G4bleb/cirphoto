@@ -1,16 +1,10 @@
-/**
- * @Author: Thibault Napoléon <Imothep>
- * @Company: ISEN Yncréa Ouest
- * @Email: thibault.napoleon@isen-ouest.yncrea.fr
- * @Created Date: 22-Jan-2018 - 16:05:26
- * @Last Modified: 06-Feb-2018 - 11:02:09
- */
-
 'use strict';
 
 // Request the photos thumbnails.
-ajaxRequest('GET', 'php/request.php/photos/', loadPhotos);
-
+$(document).ready(function() {
+  ajaxRequest('GET', 'php/request.php', loadPhotos);
+  // createWebSocket();
+});
 //------------------------------------------------------------------------------
 //--- loadPhotos ---------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -43,6 +37,7 @@ function loadPhotos(ajaxResponse)
 
         id = event.target.id.substr(6);
         event.preventDefault();
+        console.log('request'+id);
         ajaxRequest('GET', 'php/request.php/photos/' + id, loadPhoto);
         ajaxRequest('GET', 'php/request.php/comments/' + id, loadComments);
       });
@@ -61,6 +56,8 @@ function loadPhoto(ajaxResponse)
 
   // Parse JSON response.
   data = JSON.parse(ajaxResponse);
+
+  console.log("nibba "+ajaxResponse);
 
   // Create photo.
   text = '<div class="panel panel-default"><div class="panel-body">';
@@ -167,4 +164,9 @@ function loadComments(ajaxResponse)
         }, 'id=' + photoId + '&comment=' + comment);
       }
     });
+}
+
+function httpErrors(errorNumber){
+  $("#errors").show();
+  $("#errors").html(errorNumber);
 }
