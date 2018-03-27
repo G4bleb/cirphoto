@@ -48,7 +48,7 @@ $request = explode('/', $request);
 $requestRessource = array_shift($request);
 
 $data = $requestType.':'.$requestRessource;
-
+//TEST
 // Check the id associated to the request.
 $id = array_shift($request);
 if ($id == '')
