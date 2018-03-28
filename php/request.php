@@ -68,13 +68,13 @@ if ($requestRessource == 'comments')
 {
   if ($requestType == 'GET') {
     if (isset($_GET['login']))
-      $data = dbRequestComments($db, $_GET['login']);
+      $data = dbRequestComments($db, $_GET['id'], $_GET['login']);
     else
-      $data = dbRequestComments($db);
+      $data = dbRequestComments($db, $_GET['id']);
   }
 
   if ($requestType == 'POST')
-    dbAddComment($db, $_POST['login'], $_POST['text']);
+    dbAddComment($db, $_POST['login'], $_GET['id'], $_POST['text']);
 
   if ($requestType == 'PUT'){
     parse_str(file_get_contents('php://input'), $_PUT);

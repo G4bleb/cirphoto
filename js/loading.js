@@ -57,8 +57,6 @@ function loadPhoto(ajaxResponse)
   // Parse JSON response.
   data = JSON.parse(ajaxResponse);
 
-  console.log("nibba "+ajaxResponse);
-
   // Create photo.
   text = '<div class="panel panel-default"><div class="panel-body">';
   text += '<h2>' + data[0].title + '</h2>';
@@ -102,26 +100,26 @@ function loadComments(ajaxResponse)
     comments.append(div);
 
     // Add modify callback.
-    // $('#modify-' + data[i].id).unbind('click').click(
-    //   function (event)
-    //   {
-    //     var comment;
-    //     var photoId;
-    //     var id;
+    $('#modify-' + data[i].id).unbind('click').click(
+      function (event)
+      {
+        var comment;
+        var photoId;
+        var id;
 
-    //     comment = $('#comment').val();
-    //     photoId = $('#photo').attr('photoid');
-    //     id = event.target.id.substr(7);
-    //     event.preventDefault();
-    //     if (comment != '' && id != undefined && photoId != undefined)
-    //     {
-    //       ajaxRequest('PUT', 'php/request.php/comments/' + id, function ()
-    //       {
-    //         ajaxRequest('GET', 'php/request.php/comments/', loadComments,
-    //           'id=' + photoId);
-    //       }, 'comment=' + comment);
-    //     }
-    //   });
+        comment = $('#comment').val();
+        photoId = $('#photo').attr('photoid');
+        id = event.target.id.substr(7);
+        event.preventDefault();
+        if (comment != '' && id != undefined && photoId != undefined)
+        {
+          ajaxRequest('PUT', 'php/request.php/comments/' + id, function ()
+          {
+            ajaxRequest('GET', 'php/request.php/comments/', loadComments,
+              'id=' + photoId);
+          }, 'comment=' + comment);
+        }
+      });
 
     // Add delete callback.
     $('#delete-' + data[i].id).unbind('click').click(

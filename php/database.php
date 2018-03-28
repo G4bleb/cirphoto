@@ -82,16 +82,18 @@
   // \param db The connected database.
   // \param login The login of the user (for specific request).
   // \return The list of twitts.
-  function dbRequestComments($db, $login = '')
+  function dbRequestComments($db, $id ,$login = 'cir2')
   {
     try
     {
       $request = 'select * from comments';
+      $request .= ' where photoId=:id';
       if ($login != '')
-        $request .= ' where login=:login';
+        $request .= ' and userLogin=:login';
       $statement = $db->prepare($request);
       if ($login != '')
         $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
       $statement->execute();
       $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -111,14 +113,15 @@
   // \param login The login of the user.
   // \param text The twitt to add.
   // \return True on success, false otherwise.
-  function dbAddComment($db, $login, $text)
+  function dbAddComment($db, $userLogin, $id, $comment)
   {
     try
     {
-      $request = 'insert into comments(login, text) values(:login, :text)';
+      $request = 'insert into comments(userLogin, photoId, comment) values(:userLogin, :id,:comment)';
       $statement = $db->prepare($request);
-      $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
-      $statement->bindParam(':text', $text, PDO::PARAM_STR, 80);
+      $statement->bindParam(':userLogin', $userLogin, PDO::PARAM_STR, 20);
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
+      $statement->bindParam(':comment', $comment, PDO::PARAM_STR, 256);
       $statement->execute();
     }
     catch (PDOException $exception)
@@ -142,7 +145,7 @@
   {
     try
     {
-      $request = 'update comments set text=:text where id=:id and login=:login ';
+      $request = 'update comments set comment=:text where id=:id and userLogin=:login ';
       $statement = $db->prepare($request);
       $statement->bindParam(':id', $id, PDO::PARAM_INT);
       $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
@@ -169,7 +172,7 @@
   {
     try
     {
-      $request = 'delete from comments where id=:id and login=:login';
+      $request = 'delete from comments where id=:id and userLogin=:login';
       $statement = $db->prepare($request);
       $statement->bindParam(':id', $id, PDO::PARAM_INT);
       $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
