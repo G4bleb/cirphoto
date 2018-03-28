@@ -24,6 +24,7 @@ function loadPhotos(ajaxResponse)
 
     // Create thumbnail.
     element = document.createElement('div');
+    $(element).css('margin-top', '20px');
     element.className = 'col-xs-2 col-md-2';
     element.innerHTML = '<a href="#" class="thumbnail"><img src="' +
       data[i].src + '" id="photo-' + data[i].id + '"></a>';
