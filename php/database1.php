@@ -1,5 +1,6 @@
 <?php
 
+
   require_once('constants.php');
 
   //----------------------------------------------------------------------------
@@ -70,20 +71,30 @@
     return $result;
   }
 
+
+
+
+
   //----------------------------------------------------------------------------
-  //--- dbRequestComments ------------------------------------------------------
+  //--- dbRequestComments --------------------------------------------------------
   //----------------------------------------------------------------------------
-  // Get all comments of a specific photo.
+  // Function to get all twitts (if $login='') or the twitts of a user
+  // (otherwise).
   // \param db The connected database.
-  // \param photoId The id of the photo.
-  // \return The comments.
-  function dbRequestComments($db, $photoId)
+  // \param login The login of the user (for specific request).
+  // \return The list of twitts.
+  function dbRequestComments($db, $id ,$login = '')
   {
     try
     {
-      $request = 'select id, comment from comments where photoId=:photoId';
+      $request = 'select * from comments';
+      $request .= ' where photoId=:id';
+      if ($login != '')
+        $request .= ' and userLogin=:login';
       $statement = $db->prepare($request);
-      $statement->bindParam(':photoId', $photoId, PDO::PARAM_INT);
+      if ($login != '')
+        $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
       $statement->execute();
       $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -96,24 +107,21 @@
   }
 
   //----------------------------------------------------------------------------
-  //--- dbAddComment -----------------------------------------------------------
+  //--- dbAddCComment -----------------------------------------------------------
   //----------------------------------------------------------------------------
-  // Add a comment to a specific photo.
+  // Add a twitt.
   // \param db The connected database.
-  // \param userLogin The login of the user.
-  // \param photoId The id of the photo.
-  // \param comment The comment to add.
+  // \param login The login of the user.
+  // \param text The twitt to add.
   // \return True on success, false otherwise.
-  function dbAddComment($db, $userLogin, $photoId, $comment)
+  function dbAddComment($db, $userLogin, $id, $comment)
   {
     try
     {
-      $request = '
-        insert into comments(userLogin, photoId, comment)
-        values(:userLogin, :photoId, :comment)';
+      $request = 'insert into comments(userLogin, photoId, comment) values(:userLogin, :id,:comment)';
       $statement = $db->prepare($request);
       $statement->bindParam(':userLogin', $userLogin, PDO::PARAM_STR, 20);
-      $statement->bindParam(':photoId', $photoId, PDO::PARAM_INT);
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
       $statement->bindParam(':comment', $comment, PDO::PARAM_STR, 256);
       $statement->execute();
     }
@@ -126,50 +134,23 @@
   }
 
   //----------------------------------------------------------------------------
-  //--- dbModifyComment --------------------------------------------------------
+  //--- dbModifyComment ----------------------------------------------------------
   //----------------------------------------------------------------------------
-  // Modify a comment from a specific photo.
+  // Function to modify a twitt.
   // \param db The connected database.
-  // \param userLogin The login of the user.
-  // \param photoId The id of the photo.
-  // \param comment The modified comment.
+  // \param id The id of the twitt to update.
+  // \param login The login of the user.
+  // \param text The new twitt.
   // \return True on success, false otherwise.
-  function dbModifyComment($db, $userLogin, $photoId, $comment)
+  function dbModifyComment($db, $id, $login, $text)
   {
     try
     {
-      $request = 'update comments set comment=:comment where photoId=:photoId and userLogin=:userLogin ';
-      $statement = $db->prepare($request);
-      $statement->bindParam(':comment', $comment, PDO::PARAM_STR, 256);
-      $statement->bindParam(':userLogin', $userLogins, PDO::PARAM_STR, 20);
-      $statement->bindParam(':photoId', $photoId, PDO::PARAM_INT);
-      $statement->execute();
-    }
-    catch (PDOException $exception)
-    {
-      error_log('Request error: '.$exception->getMessage());
-      return false;
-    }
-    return true;
-  }
-
-  //----------------------------------------------------------------------------
-  //--- dbDeleteComment --------------------------------------------------------
-  //----------------------------------------------------------------------------
-  // Delete a comment from a specific photo.
-  // \param db The connected database.
-  // \param userLogin The login of the user.
-  // \param id The id of the comment.
-  // \return True on success, false otherwise.
-  function dbDeleteComment($db, $userLogin, $id)
-  {
-    try
-    {
-      $request = 'delete from comments where id=:id and
-        userLogin=:userLogin';
+      $request = 'update comments set comment=:text where id=:id and userLogin=:login ';
       $statement = $db->prepare($request);
       $statement->bindParam(':id', $id, PDO::PARAM_INT);
-      $statement->bindParam(':userLogin', $userLogin, PDO::PARAM_STR, 20);
+      $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
+      $statement->bindParam(':text', $text, PDO::PARAM_STR, 80);
       $statement->execute();
     }
     catch (PDOException $exception)
@@ -181,28 +162,28 @@
   }
 
   //----------------------------------------------------------------------------
-  //--- dbCheckUserInjection ---------------------------------------------------
+  //--- dbDeleteComment ----------------------------------------------------------
   //----------------------------------------------------------------------------
-  // Check login/password of a user with possible SQL injection.
+  // Delete a twitt.
   // \param db The connected database.
-  // \param login The login to check.
-  // \param password The password to check.
+  // \param id The id of the twitt.
+  // \param login The login of the user.
   // \return True on success, false otherwise.
-  function dbCheckUserInjection($db, $login, $password)
+  function dbDeleteComment($db, $id, $login)
   {
     try
     {
-      $statement = $db->query = 'select * from users where login='.$login.' and
-        password=sha1('.$password.')';
-      $result = $statement->fetch();
+      $request = 'delete from comments where id=:id and userLogin=:login';
+      $statement = $db->prepare($request);
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
+      $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
+      $statement->execute();
     }
     catch (PDOException $exception)
     {
       error_log('Request error: '.$exception->getMessage());
       return false;
     }
-    if (!$result)
-      return false;
     return true;
   }
 
