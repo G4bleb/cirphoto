@@ -25,6 +25,7 @@ function ajaxRequest(type, request, callback, data = null)
   if (type == 'GET' && data != null)
     request += '?' + data;
   xhr.open(type, request, true);
+  xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   // Add the onload function.

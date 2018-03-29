@@ -1,9 +1,9 @@
 'use strict';
-
 // Request the photos thumbnails.
 $(document).ready(function() {
   ajaxRequest('GET', 'php/request.php', loadPhotos);
-  // createWebSocket();
+  authentication();
+ $('#chat').hide()
 });
 //------------------------------------------------------------------------------
 //--- loadPhotos ---------------------------------------------------------------
@@ -38,7 +38,6 @@ function loadPhotos(ajaxResponse)
 
         id = event.target.id.substr(6);
         event.preventDefault();
-        console.log('request'+id);
         ajaxRequest('GET', 'php/request.php/photos/' + id, loadPhoto);
         ajaxRequest('GET', 'php/request.php/comments/' + id, loadComments);
       });
@@ -94,13 +93,14 @@ function loadComments(ajaxResponse)
     text += data[i].comment;
     text += '<span id=delete-' + data[i].id + ' class="glyphicon ';
     text += 'glyphicon-trash pull-right"></span>';
-    // text += '<span id=modify-' + data[i].id + ' class="glyphicon ';
-    // text += 'glyphicon-pencil pull-right">&nbsp;</span>';
+    text += '<span id=modify-' + data[i].id + ' class="glyphicon ';
+    text += 'glyphicon-pencil pull-right">&nbsp;</span>';
     text += '</div></div>';
     div.innerHTML = text;
     comments.append(div);
 
     // Add modify callback.
+    console.log("Adding modify callback");
     $('#modify-' + data[i].id).unbind('click').click(
       function (event)
       {
@@ -109,18 +109,21 @@ function loadComments(ajaxResponse)
         var id;
 
         comment = $('#comment').val();
+        comment = "hehe yikes";
         photoId = $('#photo').attr('photoid');
         id = event.target.id.substr(7);
         event.preventDefault();
+        console.log("comment : "+comment+" id : "+id+' photoId : '+photoId);
         if (comment != '' && id != undefined && photoId != undefined)
         {
+
           ajaxRequest('PUT', 'php/request.php/comments/' + id, function ()
           {
-            ajaxRequest('GET', 'php/request.php/comments/', loadComments,
-              'id=' + photoId);
-          }, 'comment=' + comment);
+            ajaxRequest('GET', 'php/request.php/comments/', loadComments,'id=' + photoId);
+          }, 'login=' + login + '&comment=' + comment);
         }
       });
+
 
     // Add delete callback.
     $('#delete-' + data[i].id).unbind('click').click(
@@ -143,6 +146,8 @@ function loadComments(ajaxResponse)
       });
   }
 
+
+
   // Add send callback
   $("#comments-add").show();
   $('#add').unbind('click').click(
@@ -151,7 +156,7 @@ function loadComments(ajaxResponse)
       var comment;
       var photoId;
 
-      comment = $('#comment').val();
+      comment = $('#comment-add').val();
       photoId = $('#photo').attr('photoid');
       event.preventDefault();
       if (comment != '' && photoId != undefined)
@@ -164,6 +169,8 @@ function loadComments(ajaxResponse)
       }
     });
 }
+
+
 
 function httpErrors(errorNumber){
   $("#errors").show();

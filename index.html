@@ -3,11 +3,11 @@
 <head>
   <!-- Meta -->
   <meta charset="utf-8" />
-  <meta name="author" content="???" />
+  <meta name="author" content="Gabriel Lebis, Pierre-Alban Lagadec, " />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Title -->
-  <title>Projet CIR2 24/01/18 - AJAX</title>
+  <title>Projet CIR2 30/03/18 - AJAX</title>
 
   <!-- Stylesheets -->
   <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -17,13 +17,16 @@
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/ajax.js"></script>
+  <script src="js/js.cookie.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/authentication.js"></script>
   <script src="js/loading.js"></script>
-  <!-- <script src="js/chat.js"></script> -->
+
 </head>
 <body>
   <!-- Header -->
   <div class="page-header container">
-    <h1>Projet CIR2 24/01/18 <small>AJAX</small></h1>
+    <h1>Projet CIR2 30/03/18 <small>AJAX</small></h1>
   </div>
 
   <!-- Errors div -->
@@ -31,7 +34,22 @@
   </div>
 
   <!-- Authentication div -->
-  <div id="auth" class="container">
+  <div id="authentication" class="container" style="display: none">
+    <h2>Authentification</h2>
+    <form>
+      <div class="input-group">
+        <span class="input-group-addon">Login</span>
+        <input type="text" class="form-control" id="login" placeholder="Entrez votre login" autofocus>
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon">Mot de passe</span>
+        <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe">
+      </div>
+      </br>
+      <button type="submit" class="btn btn-success pull-right" id="authentication-send">
+        <span class="glyphicon glyphicon-ok"></span> Envoyer
+      </button>
+    </form>
   </div>
 
   <!-- Thumbnails div -->
@@ -53,7 +71,13 @@
                 <div id="comments">
                 </div>
 
-                <div id="comments-add">
+
+                <div id="comments-add" style="display: none">
+                  <input  class="form-control" id="comment-add" placeholder="Nouveau commentaire">
+                  <button class="btn btn-success pull-right" id="add">
+                    <span class="glyphicon glyphicon-ok"></span> Add
+                  </button>
+
                 </div>
 
       <div id="chat" class="col-md-4">

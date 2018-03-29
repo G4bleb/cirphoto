@@ -1,5 +1,6 @@
 <?php
 
+
   require_once('constants.php');
 
   //----------------------------------------------------------------------------
@@ -82,7 +83,7 @@
   // \param db The connected database.
   // \param login The login of the user (for specific request).
   // \return The list of twitts.
-  function dbRequestComments($db, $id ,$login = 'cir2')
+  function dbRequestComments($db, $id ,$login = '')
   {
     try
     {
@@ -184,5 +185,89 @@
       return false;
     }
     return true;
+  }
+
+  //----------------------------------------------------------------------------
+  //--- dbCheckUser ------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  // Check login/password of a user.
+  // \param db The connected database.
+  // \param login The login to check.
+  // \param password The password to check.
+  // \return True on success, false otherwise.
+  function dbCheckUser($db, $login, $password)
+  {
+    try
+    {
+      $request = 'select * from users where login=:login and
+        password=sha1(:password)';
+      $statement = $db->prepare($request);
+      $statement->bindParam (':login', $login, PDO::PARAM_STR, 20);
+      $statement->bindParam (':password', $password, PDO::PARAM_STR, 40);
+      $statement->execute();
+      $result = $statement->fetch();
+    }
+    catch (PDOException $exception)
+    {
+      error_log('Request error: '.$exception->getMessage());
+      return false;
+    }
+    if (!$result)
+      return false;
+    return true;
+  }
+
+  //----------------------------------------------------------------------------
+  //--- dbAddToken -------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  // Add a token to the database.
+  // \param db The connected database.
+  // \param login The login assocciated with the token.
+  // \param token The token to add.
+  // \return True on success, false otherwise.
+  function dbAddToken($db, $login, $token)
+  {
+    try
+    {
+      $request = '
+        update users set token=:token where login=:login';
+      $statement = $db->prepare($request);
+      $statement->bindParam(':login', $login, PDO::PARAM_STR, 20);
+      $statement->bindParam(':token', $token, PDO::PARAM_STR, 20);
+      $statement->execute();
+    }
+    catch (PDOException $exception)
+    {
+      error_log('Request error: '.$exception->getMessage());
+      return false;
+    }
+    return true;
+  }
+
+  //----------------------------------------------------------------------------
+  //--- dbVerifyToken ----------------------------------------------------------
+  //----------------------------------------------------------------------------
+  // Verify a user token.
+  // \param db The connected database.
+  // \param token The token to check.
+  // \return Login on success, false otherwise.
+  function dbVerifyToken($db, $token)
+  {
+    try
+    {
+      $request = 'select login from users where token=:token';
+      $statement = $db->prepare($request);
+      $statement->bindParam (':token', $token, PDO::PARAM_STR, 20);
+      $statement->execute();
+      $result = $statement->fetch();
+    }
+    catch (PDOException $exception)
+    {
+      error_log('Request error: '.$exception->getMessage());
+      return false;
+    }
+    if (!$result)
+      return false;
+    return $result['login'];
   }
 ?>
