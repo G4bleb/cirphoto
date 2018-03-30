@@ -1,26 +1,26 @@
+<!--
+ /*
+ * @Author: Gabriel Lebis
+ * @GitHub: github.com/g4bleb
+ */
+-->
 <?php
-function var_dump_ret($mixed = null) {
-ob_start();
-var_dump($mixed);
-$content = ob_get_contents();
-ob_end_clean();
-return $content;
-} ?>
-
-<?php
+//------------------------------------------------------------------------------
+//--- authenticate -------------------------------------------------------------
+//------------------------------------------------------------------------------
+// Generates the token.
+// \param db The connected database.
 function authenticate($db){
 
   $login = $_SERVER['PHP_AUTH_USER'];
   $password = $_SERVER['PHP_AUTH_PW'];
 
-  error_log("authenticate has been called : login :".$login." password : ".$password);
-
-  if (!dbCheckUserInjection($db, $login, $password)) {
+  if (!dbCheckUser($db, $login, $password)) {
     header('HTTP/1.1 401 Unauthorized');
     exit;
   }
-  $token = base64_encode(openssl_random_pseudo_bytes(12));
-  error_log("TEMA C LE TOKEN : ".$token."  ");
+  $token = base64_encode(openssl_random_pseudo_bytes(12));//For some reason there's a carriage return at the start of $token
+  $token = substr($token, 1); //Remove it
   dbAddToken($db, $login, $token);
 
   header('Content-Type: text/plain; charset=utf-8');
@@ -29,23 +29,28 @@ function authenticate($db){
   echo $token;
   exit;
 }
-// Token check
+//------------------------------------------------------------------------------
+//--- verifyToken -------------------------------------------------------------
+//------------------------------------------------------------------------------
+// Checks the token.
+// \param db The connected database.
 function verifyToken($db){
-    $headers = getallheaders();
+  $headers = getallheaders();
 
-    $token = $headers['Authorization'];
+  $token = $headers['Authorization'];
 
-    if (preg_match('/Bearer (.*)/', $token, $tab))$token = $tab[1];
-    if(!($login = dbVerifyToken($db, $token))){
-        header('HTTP/1.1 401 Unauthorized');
-        exit;
-    }
+  if (preg_match('/Bearer (.*)/', $token, $tab))$token = $tab[1];
+  if(!($login = dbVerifyToken($db, $token))){
+    header('HTTP/1.1 401 Unauthorized');
+    exit;
+  }
 
-    /* Renvoie le login */
-    return $login;
+  return $login;
 }
+?>
 
-// $login = 'cir2';
+
+<?php
 require_once('database.php');
 header('Content-Type: text/plain; charset=utf-8');
 header('Cache-control: no-store, no-cache, must-revalidate');
@@ -60,18 +65,15 @@ if (!$db)
 
 // Check the request.
 $requestType = $_SERVER['REQUEST_METHOD'];
-// error_log(var_dump_ret($_SERVER));
-if (isset($_SERVER['PATH_INFO'])) {
+
+if (isset($_SERVER['PATH_INFO'])) { //If there's something to extract from the path
   $request = substr($_SERVER['PATH_INFO'], 1);
 }else{
   $request = '';
 }
 
-// $request = substr(str_replace('BASE_URL' , "" , $_SERVER['REQUEST_URI']),1);
-
 $request = explode('/', $request);
 $requestRessource = array_shift($request);
-
 $data = $requestType.':'.$requestRessource;
 
 // Check the id associated to the request.
@@ -79,20 +81,18 @@ $id = array_shift($request);
 if ($id == '')
 $id = NULL;
 
-error_log('requestRessource : '.$requestRessource);
-
 if ($requestRessource == 'authenticate') {
   authenticate($db);
 }
 
 if ($requestRessource == 'checkToken')
 {
-    if (verifyToken($db)) header('HTTP/1.1 200 OK');
+  if (verifyToken($db)) header('HTTP/1.1 200 OK');
 }
 
 
-  // Photos request
-  error_log('is id set ? : '.isset($id));
+//Photos request
+if ($requestRessource == 'photos' || $requestRessource == 'checkToken'){
   if (isset($id)){
     $data = dbRequestPhoto($db, intval($id));
     if (!$data) {
@@ -106,53 +106,29 @@ if ($requestRessource == 'checkToken')
       exit();
     }
   }
-
-
-
-
-if ($requestRessource == 'comments')
-{
-  // $message =  "hello mon bro c'est le commentaire qu a été demandé";
-  // $logfile = 'logfile.log';
-  // error_log($message."\n", 3, $logfile);
-  if ($requestType == 'GET') {
-    // $message =  "hello mon bro c'est ".$_GET['login'];
-    // $logfile = 'logfile.log';
-    // error_log($message."\n", 3, $logfile);
-    // if (isset($_GET['login']))
-    //   $data = dbRequestComments($db, intval($id), $_GET['login']);
-    // else
-      $data = dbRequestComments($db, intval($id));
-      dbRequestComments($db, intval($id));
-  }
-
-  if ($requestType == 'POST')
-  // dbAddComment($db, $login, intval($id), $_POST['comment']);
-  dbAddComment($db, verifyToken($db), intval($id), $_POST['comment']);
-  // dbAddComment($db, $_POST['login'], intval($id), $_POST['comment']);
-
-
-  if ($requestType == 'PUT'){
-    error_log(var_dump_ret($_GET));
-    parse_str(file_get_contents('php://input'), $_PUT);
-    // dbModifyComment($db, intval($id), $_PUT['login'], $_PUT['comment']);
-    dbModifyComment($db, intval($id), $login, $_PUT['comment']);
-  }
-  if ($requestType == 'DELETE')
-    // dbDeleteComment($db, intval($id), $_GET['login']);
-    // dbDeleteComment($db, intval($id), $login);
-    dbDeleteComment($db, verifyToken($db), intval($id));
 }
 
 
+//Comments request
+if ($requestRessource == 'comments')
+{
+  //Requesting comments for review
+  if ($requestType == 'GET') {
+    $data = dbRequestComments($db, intval($id));
+    dbRequestComments($db, intval($id));
+  }
+  //Requesting comment sending
+  if ($requestType == 'POST'){
+    dbAddComment($db, verifyToken($db), $_POST['id'], $_POST['comment']);
+  }
+  //Requesting comment deletion
+  if ($requestType == 'DELETE')
+  dbDeleteComment($db, verifyToken($db), intval($id));
+}
 
 // Send data to the client.
 
 header('HTTP/1.1 200 OK');
 echo json_encode($data);
 exit;
-
-// function sendJsonData($data, $code){
-//
-// }
 ?>

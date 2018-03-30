@@ -1,3 +1,8 @@
+/*
+ * @Author: Gabriel Lebis
+ * @GitHub: github.com/g4bleb
+ */
+
 'use strict';
 
 function authentication()
@@ -6,6 +11,10 @@ function authentication()
   $("#authentication").show();
 }
 
+//------------------------------------------------------------------------------
+//--- validateLogin -------------------------------------------------------------
+//------------------------------------------------------------------------------
+// Check if login is right
 function validateLogin(event)
 {
   var login;
@@ -20,9 +29,9 @@ function validateLogin(event)
   $('#errors').html('');
   if (login == '' || password == '')
   {
-    $('#errors').html('<div id="errors" class="alert alert-danger" role="alert">'+
+    $('#errors').html(
     '<span class="glyphicon glyphicon-exclamation-sign"aria-hidden="true"></span>'+
-    '<strong> L\'un des champs est vide.</strong></div>');
+    '<strong> L\'un des champs est vide.</strong>');
   }
   else
   {
@@ -38,10 +47,9 @@ function validateLogin(event)
       {
         case 200:
           console.log('le token : '+xhr.responseText);
-          Cookies.set('token', xhr.responseText.substr(1));
+          Cookies.set('token', xhr.responseText);
           $("#authentication").hide();
           $('#chat').show();
-          $('#comments-add').show();
           ajaxRequest('GET', 'php/request.php/checkToken', loadPhotos);
           break;
         default:

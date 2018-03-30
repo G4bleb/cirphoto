@@ -1,17 +1,15 @@
+/*
+ * @Author: Gabriel Lebis
+ * @GitHub: github.com/g4bleb
+ */
+
 'use strict';
-// Request the photos thumbnails.
 $(document).ready(function() {
-  $('#chat').hide();
-  if (Cookies.get('token') == 'undefined') {
-        authentication();
+  if (Cookies.get('token') == 'undefined') { //If client has a token
+    authentication();
   }else {
-      ajaxRequest('GET', 'php/request.php/checkToken', loadPhotos);
-      // ajaxRequest('GET', 'php/request.php', loadPhotos);
+    ajaxRequest('GET', 'php/request.php/checkToken', loadPhotos);//If his token is valid, load thumbnails
   }
-
-    // ajaxRequest('GET', 'php/request.php/photos/', loadPhotos);
-
-
 
 });
 //------------------------------------------------------------------------------
@@ -47,9 +45,6 @@ function loadPhotos(ajaxResponse)
         event.preventDefault();
         ajaxRequest('GET', 'php/request.php/photos/' + id, loadPhoto);
         ajaxRequest('GET', 'php/request.php/comments/' + id, loadComments);
-
-        // ajaxRequest('GET', 'php/request.php/photos/', loadPhoto, 'id=' + id);
-        // ajaxRequest('GET', 'php/request.php/comments/', loadComments, 'id=' + id);
       });
     }
   }
@@ -103,39 +98,32 @@ function loadPhotos(ajaxResponse)
       text += data[i].comment;
       text += '<span id=delete-' + data[i].id + ' class="glyphicon ';
       text += 'glyphicon-trash pull-right"></span>';
-      text += '<span id=modify-' + data[i].id + ' class="glyphicon ';
-      text += 'glyphicon-pencil pull-right">&nbsp;</span>';
       text += '</div></div>';
       div.innerHTML = text;
       comments.append(div);
 
-      // Add modify callback.
-      console.log("Adding modify callback");
-      $('#modify-' + data[i].id).unbind('click').click(
+
+      // Add send callback on comment
+      $("#comments-add").show();
+      $('#add').unbind('click').click(
         function (event)
         {
           var comment;
           var photoId;
-          var id;
 
-          comment = $('#comment').val();
-          comment = "hehe yikes";
+          comment = $('#comment-add').val();
           photoId = $('#photo').attr('photoid');
-          id = event.target.id.substr(7);
           event.preventDefault();
-          console.log("comment : "+comment+" id : "+id+' photoId : '+photoId);
-          if (comment != '' && id != undefined && photoId != undefined)
+          if (comment != '' && photoId != undefined)
           {
-
-            ajaxRequest('PUT', 'php/request.php/comments/' + id, function ()
+            ajaxRequest('POST', 'php/request.php/comments/', function ()
             {
-              ajaxRequest('GET', 'php/request.php/comments/', loadComments,'id=' + photoId);
-            }, 'login=' + login + '&comment=' + comment);
+              ajaxRequest('GET', 'php/request.php/comments/' + photoId, loadComments);
+            }, 'id=' + photoId + '&comment=' + comment);
           }
         });
 
-
-        // Add delete callback.
+        // Add delete callback on comment
         $('#delete-' + data[i].id).unbind('click').click(
           function (event)
           {
@@ -149,40 +137,9 @@ function loadPhotos(ajaxResponse)
             {
               ajaxRequest('DELETE', 'php/request.php/comments/' + id, function ()
               {
-                ajaxRequest('GET', 'php/request.php/comments/', loadComments,
-                'id=' + photoId);
+                ajaxRequest('GET', 'php/request.php/comments/' + photoId, loadComments);
               });
             }
           });
         }
-
-
-
-        // Add send callback
-        $("#comments-add").show();
-        $('#add').unbind('click').click(
-          function (event)
-          {
-            var comment;
-            var photoId;
-
-            comment = $('#comment-add').val();
-            photoId = $('#photo').attr('photoid');
-            event.preventDefault();
-            if (comment != '' && photoId != undefined)
-            {
-              ajaxRequest('POST', 'php/request.php/comments/', function ()
-              {
-                ajaxRequest('GET', 'php/request.php/comments/', loadComments,
-                'id=' + photoId);
-              }, 'id=' + photoId + '&comment=' + comment);
-            }
-          });
-        }
-
-
-
-        function httpErrors(errorNumber){
-          $("#errors").show();
-          $("#errors").html(errorNumber);
-        }
+      }

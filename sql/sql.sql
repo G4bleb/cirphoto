@@ -69,5 +69,17 @@ insert into photos(title, small, large) values('Maison vers l''océan', 'img/sma
 insert into photos(title, small, large) values('Fuite en hiver', 'img/small/photo11.png', 'img/large/photo11.png');
 insert into photos(title, small, large) values('Entrée de verdure', 'img/small/photo12.png', 'img/large/photo12.png');
 
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '1', 'Cool !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '1', 'Intersting !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '1', 'Wow !');
+
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '2', 'Cool !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '2', 'Intersting !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '2', 'Wow !');
+
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '3', 'Cool !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '3', 'Intersting !');
+  INSERT INTO `comments` (`id`, `userLogin`, `photoId`, `comment`) VALUES (NULL, 'cir2', '3', 'Wow !');
+
 set autocommit = 0;
 set names utf8;

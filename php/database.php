@@ -1,5 +1,4 @@
 <?php
-
   require_once('constants.php');
 
   //----------------------------------------------------------------------------
@@ -126,34 +125,6 @@
   }
 
   //----------------------------------------------------------------------------
-  //--- dbModifyComment --------------------------------------------------------
-  //----------------------------------------------------------------------------
-  // Modify a comment from a specific photo.
-  // \param db The connected database.
-  // \param userLogin The login of the user.
-  // \param photoId The id of the photo.
-  // \param comment The modified comment.
-  // \return True on success, false otherwise.
-  function dbModifyComment($db, $userLogin, $photoId, $comment)
-  {
-    try
-    {
-      $request = 'update comments set comment=:comment where photoId=:photoId and userLogin=:userLogin ';
-      $statement = $db->prepare($request);
-      $statement->bindParam(':comment', $comment, PDO::PARAM_STR, 256);
-      $statement->bindParam(':userLogin', $userLogins, PDO::PARAM_STR, 20);
-      $statement->bindParam(':photoId', $photoId, PDO::PARAM_INT);
-      $statement->execute();
-    }
-    catch (PDOException $exception)
-    {
-      error_log('Request error: '.$exception->getMessage());
-      return false;
-    }
-    return true;
-  }
-
-  //----------------------------------------------------------------------------
   //--- dbDeleteComment --------------------------------------------------------
   //----------------------------------------------------------------------------
   // Delete a comment from a specific photo.
@@ -180,31 +151,6 @@
     return true;
   }
 
-  //----------------------------------------------------------------------------
-  //--- dbCheckUserInjection ---------------------------------------------------
-  //----------------------------------------------------------------------------
-  // Check login/password of a user with possible SQL injection.
-  // \param db The connected database.
-  // \param login The login to check.
-  // \param password The password to check.
-  // \return True on success, false otherwise.
-  function dbCheckUserInjection($db, $login, $password)
-  {
-    try
-    {
-      $statement = $db->query("select * from users where login='".$login."' and
-        password=sha1('".$password."')");
-      $result = $statement->fetch();
-    }
-    catch (PDOException $exception)
-    {
-      error_log('Request error: '.$exception->getMessage());
-      return false;
-    }
-    if (!$result)
-      return false;
-    return true;
-  }
 
   //----------------------------------------------------------------------------
   //--- dbCheckUser ------------------------------------------------------------

@@ -1,9 +1,6 @@
-/**
- * @Author: Thibault NapolÃ©on <Imothep>
- * @Company: ISEN YncrÃ©a Ouest
- * @Email: thibault.napoleon@isen-ouest.yncrea.fr
- * @Created Date: 23-Jan-2018 - 17:00:53
- * @Last Modified: 24-Jan-2018 - 17:03:23
+/*
+ * @Author: Gabriel Lebis
+ * @GitHub: github.com/g4bleb
  */
 
 'use strict';
@@ -33,18 +30,16 @@ function ajaxRequest(type, request, callback, data = null) {
       xhr.setRequestHeader('Authorization', 'Bearer ' + token);
   }
 
-  // console.log("Token dans Ajax.js : "+Cookies.get('token'));
-  // xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   // Add the onload function.
   xhr.onload = function () {
     console.log(xhr.status);
-
     switch (xhr.status) {
       case 200:
       case 201:
         console.log(xhr.responseText);
+        $('#errors').hide();
         callback(xhr.responseText);
         break;
       case 401:
@@ -67,25 +62,23 @@ function ajaxRequest(type, request, callback, data = null) {
 // Display a message corresponding to an Http error code.
 // \param errorNumber the error code.
 function httpErrors(errorNumber) {
-  var text = '<div class="alert alert-danger" role="alert">';
-  text += '<span class="glyphicon glyphicon-exclamation-sign"></span>';
-
+  var text = '<span class="glyphicon glyphicon-exclamation-sign"></span>';
   switch (errorNumber) {
     case 400:
       // Bad request.
-      text += '<strong> RequÃªte incorrecte</strong>';
+      text += '<strong> Requête incorrecte</strong>';
       break;
     case 401:
       // Unauthorized.
-      text += '<strong> Authentifiez vous</strong>';
+      text += '<strong> Veuillez vous authentifier</strong>';
       break;
     case 403:
       // Forbidden.
-      text += '<strong> AccÃ¨s refusÃ©</strong>';
+      text += '<strong> Accès refusé</strong>';
       break;
     case 404:
       // Ressource not found.
-      text += '<strong> Page non trouvÃ©e</strong>';
+      text += '<strong> Page non trouvée</strong>';
       break;
     case 500:
       // Internal server error.
@@ -99,6 +92,6 @@ function httpErrors(errorNumber) {
       text += '<strong> HTTP erreur ' + errorNumber + '</strong>';
       break;
   }
-  text += '</div>';
   $('#errors').html(text);
+  $('#errors').show();
 }
