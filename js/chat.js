@@ -7,7 +7,7 @@ createWebSocket();
 
 function createWebSocket()
 {
-  // websocket = new WebSocket('ws://172.17.5.64:12345');
+  websocket = new WebSocket('ws://chen-co.local:12345');
   $('#chat-send').unbind('click').click(sendMessage);
   websocket.onmessage = function(message)
   {

@@ -30,18 +30,19 @@ function validateLogin(event)
 
     xhr = new XMLHttpRequest();
     xhr.open('GET', 'php/request.php/authenticate', true);
-    xhr.setRequestHeader('Authorization', 'Basic ' + btoa(login + ':' +
-      password));
+    xhr.setRequestHeader('Authorization', 'Basic ' + btoa(login + ':' + password));
 
     xhr.onload = function ()
     {
       switch (xhr.status)
       {
         case 200:
+          console.log('le token : '+xhr.responseText);
           Cookies.set('token', xhr.responseText);
           $("#authentication").hide();
           $('#infos').html('Authentification OK');
-          $('#chat').show()
+          $('#chat').show();
+          $('#comments-add').show();
           break;
         default:
           httpErrors(xhr.status);
@@ -50,4 +51,27 @@ function validateLogin(event)
 
     xhr.send();
   }
+}
+
+function checkAuth(callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'php/request.php/checkToken', true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onload = function () {
+        console.log(xhr.status);
+
+        switch (xhr.status) {
+            case 200:
+                callback(true);
+                break;
+
+            default:
+                httpErrors(xhr.status);
+                callback(false);
+        }
+    };
+
+    xhr.send();
 }
