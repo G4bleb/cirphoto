@@ -123,10 +123,12 @@ if ($requestRessource == 'comments')
     //   $data = dbRequestComments($db, intval($id), $_GET['login']);
     // else
       $data = dbRequestComments($db, intval($id));
+      dbRequestComments($db, intval($id));
   }
 
   if ($requestType == 'POST')
-  dbAddComment($db, $login, intval($id), $_POST['comment']);
+  // dbAddComment($db, $login, intval($id), $_POST['comment']);
+  dbAddComment($db, verifyToken($db), intval($id), $_POST['comment']);
   // dbAddComment($db, $_POST['login'], intval($id), $_POST['comment']);
 
 
@@ -138,7 +140,8 @@ if ($requestRessource == 'comments')
   }
   if ($requestType == 'DELETE')
     // dbDeleteComment($db, intval($id), $_GET['login']);
-    dbDeleteComment($db, intval($id), $login);
+    // dbDeleteComment($db, intval($id), $login);
+    dbDeleteComment($db, verifyToken($db), intval($id));
 }
 
 
