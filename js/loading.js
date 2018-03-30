@@ -1,12 +1,16 @@
 'use strict';
 // Request the photos thumbnails.
 $(document).ready(function() {
-  $('#chat').hide()
+  $('#chat').hide();
+  if (Cookies.get('token') == 'undefined') {
+        authentication();
+  }else {
+      ajaxRequest('GET', 'php/request.php/checkToken', loadPhotos);
+      // ajaxRequest('GET', 'php/request.php', loadPhotos);
+  }
 
-  // ajaxRequest('GET', 'php/request.php', loadPhotos);
+    // ajaxRequest('GET', 'php/request.php/photos/', loadPhotos);
 
-    ajaxRequest('GET', 'php/request.php/photos/', loadPhotos);
-    authentication();
 
 
 });
@@ -18,7 +22,7 @@ $(document).ready(function() {
 function loadPhotos(ajaxResponse)
 {
   var data;
-
+  $('#chat').show();
   // Parse JSON response.
   data = JSON.parse(ajaxResponse);
 

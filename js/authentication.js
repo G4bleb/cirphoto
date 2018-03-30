@@ -38,11 +38,11 @@ function validateLogin(event)
       {
         case 200:
           console.log('le token : '+xhr.responseText);
-          Cookies.set('token', xhr.responseText);
+          Cookies.set('token', xhr.responseText.substr(1));
           $("#authentication").hide();
-          $('#infos').html('Authentification OK');
           $('#chat').show();
           $('#comments-add').show();
+          ajaxRequest('GET', 'php/request.php/checkToken', loadPhotos);
           break;
         default:
           httpErrors(xhr.status);
@@ -51,27 +51,4 @@ function validateLogin(event)
 
     xhr.send();
   }
-}
-
-function checkAuth(callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'php/request.php/checkToken', true);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    xhr.onload = function () {
-        console.log(xhr.status);
-
-        switch (xhr.status) {
-            case 200:
-                callback(true);
-                break;
-
-            default:
-                httpErrors(xhr.status);
-                callback(false);
-        }
-    };
-
-    xhr.send();
 }

@@ -26,8 +26,15 @@ function ajaxRequest(type, request, callback, data = null) {
   }
   console.log('request : '+request)
   xhr.open(type, request, true);
+
+  var token = Cookies.get('token');
+  if (token !='undefined') {
+    console.log("Token dans Ajax.js : "+token);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+  }
+
   // console.log("Token dans Ajax.js : "+Cookies.get('token'));
-  xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
+  // xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   // Add the onload function.
